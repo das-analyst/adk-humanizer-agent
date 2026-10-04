@@ -1,0 +1,22 @@
+[project]
+name = "humanize_writing"
+version = "0.1.0"
+description = "ADK-powered multi-agent AI Text Humanizer supporting OpenRouter & NVIDIA NIM"
+authors = [
+    { name = "Humanizer Team" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "google-adk>=2.9.0",
+    "litellm>=1.100.0",
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.0.0",
+    "rich>=13.0.0",
+    "pytest>=8.0.0",
+    "mcp<2",
+    "fastmcp>=3.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
