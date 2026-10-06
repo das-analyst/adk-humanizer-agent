@@ -7,7 +7,7 @@ if str(_project_root) not in sys.path:
     sys.path.insert(0, str(_project_root))
 
 from google.adk.agents import LlmAgent
-from config import get_configured_model
+from config import get_analytic_model
 from tools.diff import compare_texts
 
 # Load procedural skill standards
@@ -21,7 +21,7 @@ DETECTOR_GUIDE = detector_skill_path.read_text(encoding="utf-8") if detector_ski
 
 root_agent = LlmAgent(
     name="critic_agent",
-    model=get_configured_model(),
+    model=get_analytic_model(),
     description=(
         "Quality Gate & Fidelity Auditor that compares the humanized rewrite "
         "against the original text using deterministic diff and metric tools, "
@@ -37,29 +37,35 @@ tangible improvement before clearing the result.
 ## Goal
 Perform an objective audit comparing the original text and the `HUMANIZED_DRAFT:`.
 Call `compare_texts(original_text, humanized_text)` to compute:
-1. Factual fidelity audit: verify every key entity, figure, name, and claim was retained.
+1. Material factual fidelity audit: verify key entities, figures, names, and citations were retained. Do not penalize deliberate cuts of redundant synthesis.
 2. Cliché elimination audit: verify zero remaining banned AI buzzwords.
 3. Turnitin & AI Detector Anti-Pattern audit:
    - Verify zero template openings ("This paper will discuss...", "In conclusion, this essay...").
    - Verify replacement of generic placeholder adjectives with concrete domain nouns/verbs.
-   - Verify relational synthesis over serial summaries.
-4. Cadence and burstiness improvements: confirm sentence standard deviation is >= 8.0 (Dynamic Human), OR that it increased if the original baseline was below 8.0.
-5. Composite Human-Likeness Index delta: ensure HLI is >= 85.0% (or maintained/improved if the original was already >= 90.0%).
+   - Verify compression targets (e.g., word count reduced by 15-20% if applicable).
+4. Voice Pattern Audit:
+   - Verify zero "not X, but Y" contrast pivot constructions.
+   - Ensure colon and tricolon list density is low.
+   - Verify section lengths are asymmetrical (uneven).
+   - Ensure no "mic-drop" reflective conclusions.
+5. Cadence and burstiness improvements: confirm sentence standard deviation is >= 8.0 (Dynamic Human), OR that it increased if the original baseline was below 8.0.
 6. Citation Signal Phrase audit (Advisory): note any unintegrated bare citations with advisory recommendations.
 
 ## Constraints
-- **Single Tool Invocation:** Always call `compare_texts(original_text, humanized_text)` once.
+- **Single Tool Invocation:** Always call `compare_texts(original_text, humanized_text)` once per audit (or once per section in long-form mode).
   Do NOT make separate or duplicate metric calls—`compare_texts` already returns the complete
   before-and-after linguistic metrics and entity diffs.
 - **Clean Negative Verification:** Proving what was eliminated (banned words, robotic
   openers, template phrases) is as crucial as verifying what was retained.
 - **Adaptive Gatekeeping:**
   - Mark `APPROVED` if:
-    * Factual fidelity is 100% preserved (all names, numbers, dates retained).
+    * Material factual fidelity is preserved (key names, numbers, citations).
     * Zero banned AI clichés remain.
     * Zero template openings remain ("This paper will discuss...", etc.).
+    * Zero contrast pivot constructions ("not just X, but Y").
+    * Colon density is low.
+    * Section shapes are asymmetrical (if evaluating a full document/multiple sections).
     * Burstiness stdev is >= 8.0 (or higher than original if original was < 8.0).
-    * HLI is >= 85.0% (or >= original if original was already >= 90.0%).
   - *Advisory Citations Rule:* Unintegrated bare citations (e.g. `(Smith, 2023)` without a signal phrase)
     must NOT block `APPROVED`. Instead, report them under `Advisory Notes (Turnitin & Citation Integration):`
     with helpful integration suggestions.

@@ -34,3 +34,7 @@ session.db
 # Operating System temporary files
 .DS_Store
 Thumbs.db
+
+# Private reference texts (personal coursework; never commit)
+benchmarks/private/
+

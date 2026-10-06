@@ -7,7 +7,7 @@ if str(_project_root) not in sys.path:
     sys.path.insert(0, str(_project_root))
 
 from google.adk.agents import LlmAgent
-from config import get_configured_model
+from config import get_analytic_model
 from tools.metrics import analyze_linguistic_metrics
 
 # Load procedural skill standards
@@ -21,7 +21,7 @@ DETECTOR_GUIDE = detector_skill_path.read_text(encoding="utf-8") if detector_ski
 
 root_agent = LlmAgent(
     name="diagnostic_agent",
-    model=get_configured_model(),
+    model=get_analytic_model(),
     description=(
         "Linguistic Diagnostic Specialist that inspects text for hallmarks of "
         "Large Language Model generation, computes burstiness (sentence variance), "
@@ -38,11 +38,12 @@ ground-truth baselines using deterministic tools before any rewriting takes plac
 Inspect the provided text, invoke the `analyze_linguistic_metrics` tool, interpret
 the deterministic scores against human standards, and produce an objective
 `DIAGNOSTIC_REPORT:` summarizing:
-1. Sentence burstiness (length standard deviation) and rhythmic uniformity.
-2. AI cliché count, transition crutches, and specific flagged words.
-3. Turnitin / AI Detector anti-pattern flags (generic adjectives, template openings, unintegrated citations, isolated paragraphs).
+1. Turnitin / AI Detector anti-pattern flags (generic adjectives, template openings, unintegrated citations, isolated paragraphs).
+2. Voice Pattern Signatures: colon density, tricolon lists, contrast pivots ("not X, but Y"), and symmetric section pacing.
+3. AI cliché count, transition crutches, and specific flagged words.
 4. Sentence opener repetition patterns.
-5. Composite Human-Likeness Index (0–100%) and AI Detector Risk (0–100%).
+5. Sentence burstiness (length standard deviation). Note: Burstiness is a secondary metric; high variance alone does not guarantee human-likeness if voice signatures are robotic.
+6. Composite Human-Likeness Index (0–100%) and AI Detector Risk (0–100%).
 
 ## Constraints
 - **Mandatory Tool Invocation:** Always call `analyze_linguistic_metrics` on the text.
@@ -64,7 +65,12 @@ Begin your output with `DIAGNOSTIC_REPORT:` on the first line, followed by:
 
 - **Baseline Human-Likeness Index:** [Score]%
 - **AI Detector Risk Score:** [Score]% (Low <= 25% / Moderate 26-55% / High >= 56%)
-- **Sentence Burstiness (Stdev):** [Score] (Verdict: Robotic < 6.0 / Marginal 6.0-7.9 / Dynamic Human >= 8.0)
+- **Voice Pattern Signatures:**
+  - *Contrast Pivots:* [Count] ("not X, but Y" constructions)
+  - *Colon Density:* [Low/High/Score]
+  - *Section Symmetry:* [Symmetrical/Organic]
+  - *Tricolon Lists / Mic-Drops:* [Count / Flags]
+- **Sentence Burstiness (Stdev) (Secondary):** [Score] (Verdict: Robotic < 6.0 / Marginal 6.0-7.9 / Dynamic Human >= 8.0)
 - **Flagged AI Clichés:** [Count] found: [Comma-separated list of flagged words, or "None (Clean)"]
 - **Turnitin / AI Detector Vulnerabilities:**
   - *Generic Adjectives:* [Count] found: [List of generic adjectives, e.g. significant, effective, or "None"]

@@ -1,10 +1,11 @@
-"""Text diff and delta comparator tool."""
+﻿"""Text diff and delta comparator tool."""
 
 from __future__ import annotations
 
 import difflib
 from typing import Any, Dict
 from .metrics import analyze_linguistic_metrics
+from .chunking import compression_ratio, missing_entities
 
 
 def compare_texts(original_text: str, humanized_text: str) -> Dict[str, Any]:
@@ -54,6 +55,15 @@ def compare_texts(original_text: str, humanized_text: str) -> Dict[str, Any]:
             f"Advisory: Citation '({cit})' lacks a signal phrase. Consider introducing it with 'According to {author_hint}...' or 'As {author_hint} demonstrated...' for smoother academic integration."
         )
 
+    # Voice-pattern deltas and material-entity retention (deliberate cuts are not penalized)
+    voice_keys = ["colon_density", "contrast_constructions", "tricolon_density", "mic_drop_closers",
+                  "pivot_paragraphs", "concreteness_per_100"]
+    voice_before = {k: orig_metrics[k] for k in voice_keys}
+    voice_after = {k: new_metrics[k] for k in voice_keys}
+    miss = missing_entities(original_text, humanized_text)
+    material_missing = {k: v for k, v in miss.items() if k in ("citations", "numbers") and v}
+    comp = compression_ratio(original_text, humanized_text)
+
     return {
         "original_metrics": orig_metrics,
         "humanized_metrics": new_metrics,
@@ -66,4 +76,10 @@ def compare_texts(original_text: str, humanized_text: str) -> Dict[str, Any]:
         "detector_risk_delta": detector_risk_delta,
         "citation_advisories": citation_advisories,
         "improvements": improvements,
+        "voice_before": voice_before,
+        "voice_after": voice_after,
+        "compression_pct": comp,
+        "missing_material_entities": material_missing,
+        "advisory_missing_names": miss.get("names", []),
     }
+

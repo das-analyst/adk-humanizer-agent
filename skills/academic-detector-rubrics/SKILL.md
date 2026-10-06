@@ -21,8 +21,8 @@ This skill operationalizes a 10-point linguistic and rhetorical rubric designed 
 ### 3️⃣ Lack of Depth or Synthesis
 - **AI-Like Pattern:** Serial summarization where paragraphs list facts without linking them together or explaining the relationship between concepts.
   - *Example:* *"Use Case Diagrams and DFDs show different perspectives. Use Case Diagrams focus on users. DFDs focus on data."*
-- **Human Revision Standard:** Relational synthesis using subordinating conjunctions and contrastive framing (*"While X..., Y...—together..."*).
-  - *Example:* *"While Use Case Diagrams map user interactions, DFDs trace data flow—together offering a holistic model of system behavior."*
+- **Human Revision Standard:** Link related facts with a plain connector, once where it helps. Do **not** apply a "While X…, Y…—together…" frame throughout: used repeatedly it becomes its own AI signature (see item 12). Cutting one of two redundant points is often better than fusing them.
+  - *Example:* *"Use Case Diagrams map who does what; DFDs trace where the data goes."*
 
 ### 4️⃣ Impersonal, Template-Based Openings
 - **AI-Like Pattern:** Throat-clearing meta-announcements (*"This paper will discuss..."*, *"The purpose of this study is to examine..."*, *"In conclusion, this essay explains..."*).
@@ -54,12 +54,30 @@ This skill operationalizes a 10-point linguistic and rhetorical rubric designed 
   - *Graceful Degradation:* This check is waived for inputs under 100 words, executive bullet summaries, or single-sentence prompts.
 
 ### 9️⃣ Mechanical Introductions & Conclusions
-- **AI-Like Pattern:** Formulaic mirror summaries that mechanically restate the introduction without deepening the argument (*"In conclusion, we have seen that X, Y, and Z are important..."*).
-- **Human Revision Standard:** Conclude with reflective insight, real-world implications, or forward-looking stakes—clarifying what the findings mean and why they matter.
+- **AI-Like Pattern:** Formulaic mirror summaries that mechanically restate the introduction (*"In conclusion, we have seen that X, Y, and Z are important..."*), **and** grand quotable closers (*"…achieve together what no individual could ever achieve alone."*).
+- **Human Revision Standard:** A short, plain ending (2–4 sentences): what the author learned or will do. No mic-drop line, no mirrored restatement.
 
-### 🔟 No Minor Errors or Stylistic Shifts (Artificial Perfection)
-- **AI-Like Pattern:** Unnaturally clean, metronomic prose lacking conversational pivots, rhythm pauses, or stylistic breathing room.
-- **Human Revision Standard:** Intentional cadence modulation—em-dashes (—) for organic pivots, parenthetical clarifications, and occasional punchy micro-sentences (3–8 words).
+### 🔟 Artificial Perfection
+- **AI-Like Pattern:** Unnaturally clean, symmetrical prose where every section has the same shape and every paragraph resolves neatly.
+- **Human Revision Standard:** Uneven section lengths, some paragraphs without a tidy lesson, plain spoken-register wording, hedges (*"I tend to"*, *"I need to"*), occasional informal phrasing. Burstiness is advisory only; it did not distinguish a passing human paper from a flagged AI draft.
+
+### 1️⃣1️⃣ "Not X but Y" Contrast Pivots
+- **AI-Like Pattern:** *"X is not Y: it is Z"*, *"not merely X but Y"*, *"not about X; it is about Y"*.
+- **Human Revision Standard:** State the positive claim directly. At most one such construction per document.
+
+### 1️⃣2️⃣ Repeated Paragraph Shape
+- **AI-Like Pattern:** Each section follows *strength → anecdote → "However, my self-assessment reveals…" → lesson*; consecutive paragraphs open with contrast pivots.
+- **Human Revision Standard:** Vary the shape per section; at most one pivot-opening paragraph per 800 words.
+
+### 1️⃣3️⃣ Colon and Tricolon Density
+- **AI-Like Pattern:** Many colons in running prose (more than ~1 per 100 words) and constant three-item series (*"shared power, cultivating autonomy, and building self-efficacy"*).
+- **Human Revision Standard:** Commas and plain sentences; vary list lengths (2, 4, or a sentence).
+
+### 1️⃣4️⃣ No Concrete Detail
+- **AI-Like Pattern:** Polished abstract claims with no named project, number, incident, or personal moment.
+- **Human Revision Standard:** Anchor each major section in a specific from the source text or the user's `VOICE_PROFILE:`. **Never invent one.** If none exists, say so under *Authenticity Slots* rather than fabricating.
+
+> See `human-voice-patterns/SKILL.md` for the full pattern list, plain-word replacements, and casual-slips rules.
 
 ---
 

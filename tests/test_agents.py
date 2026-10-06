@@ -95,14 +95,19 @@ def test_model_config_resolution():
     from config import get_configured_model
 
     # Test NVIDIA NIM resolution
-    os.environ["HUMANIZER_MODEL"] = "nvidia_nim/google/gemma-4-31b-it"
+    os.environ["HUMANIZER_ANALYTIC_MODEL"] = "nvidia_nim/google/gemma-4-31b-it"
     model = get_configured_model()
     assert "openai/google/gemma-4-31b-it" in model.model
 
     # Test OpenRouter resolution
-    os.environ["HUMANIZER_MODEL"] = "openrouter/nvidia/nemotron-3.5-lightning:free"
+    os.environ["HUMANIZER_ANALYTIC_MODEL"] = "openrouter/nvidia/nemotron-3.5-lightning:free"
     model_or = get_configured_model()
     assert model_or.model == "openrouter/nvidia/nemotron-3.5-lightning:free"
+
+    # Test Local Ollama resolution
+    os.environ["HUMANIZER_ANALYTIC_MODEL"] = "ollama/qwen2.5:7b"
+    model_ol = get_configured_model()
+    assert model_ol.model == "openai/qwen2.5:7b"
 
 
 def test_mcp_server_registered():
@@ -112,14 +117,14 @@ def test_mcp_server_registered():
 
 
 def test_orchestrator_fast_track_detection():
-    from agents.humanizer_orchestrator.agent import root_agent as orchestrator
+    from tools.voice import parse_request
 
-    assert orchestrator._is_fast_track("Quickly humanize this draft") is True
-    assert orchestrator._is_fast_track("Fast rewrite: In today's world...") is True
-    assert orchestrator._is_fast_track("Speed mode humanization") is True
-    assert orchestrator._is_fast_track("Humanize this with --fast flag") is True
-    assert orchestrator._is_fast_track("Standard humanize of this text") is False
-    assert orchestrator._is_fast_track("Please humanize this text in a natural tone.") is False
+    assert parse_request("Quickly humanize this draft").fast is True
+    assert parse_request("Fast rewrite: In today's world...").fast is True
+    assert parse_request("Speed mode humanization").fast is True
+    assert parse_request("Humanize this with --fast flag").fast is True
+    assert parse_request("Standard humanize of this text").fast is False
+    assert parse_request("Please humanize this text in a natural tone.").fast is False
 
 
 def test_critic_agent_tools_streamlined():
@@ -138,5 +143,5 @@ def test_rewriter_revision_instructions():
 
     assert "Revision Protocol" in rewriter.instruction
     assert "Zero Banned Words & Self-Audit" in rewriter.instruction
-    assert "Zero Factual Hallucination or Omission" in rewriter.instruction
+    assert "Material Fact Preservation (Zero Fabrication)" in rewriter.instruction
     assert "Zero Template Openers" in rewriter.instruction or "template" in rewriter.instruction.lower()

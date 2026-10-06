@@ -8,11 +8,11 @@ This skill establishes the syntactic and rhythmic architecture for authentic hum
 
 Large Language Models generate text with uniform sentence lengths (typically clustering tightly around 15–20 words with standard deviation < 5.0). Human writing breathes, accelerates, pauses, and surges.
 
-### Target Distribution
-- **Overall Standard Deviation:** Must exceed **8.0** words per sentence.
-- **Micro-Sentences (3–8 words):** ~20% of text. Used for declarative punches, transitions, questions, and emphasis.
-- **Medium Sentences (12–18 words):** ~50% of text. Used for linear narrative and connecting ideas.
-- **Complex Sentences (22–35 words):** ~30% of text. Used for layered context, nuanced explanations, and rich illustration.
+### Target Distribution (Advisory)
+- **Overall Standard Deviation:** Aim for roughly **8.0 or higher**; this is a soft check, not a gate. Do not distort sentences to hit it.
+- **Micro-Sentences (3–8 words):** ~10–20% of text, used where the thought is short.
+- **Medium Sentences (12–18 words):** the bulk of linear narrative.
+- **Complex Sentences (22–35 words):** where the idea genuinely needs layers.
 
 ### Cadence Pattern Examples
 > **Robotic Uniformity (Negative Pattern):**
@@ -23,15 +23,18 @@ Large Language Models generate text with uniform sentence lengths (typically clu
 
 ---
 
-## 2. Anti-Monotony Guardrails
+## 2. Anti-Monotony Guardrails (Advisory)
 
-1. **The Rule of Three:** Never allow three consecutive sentences to fall within 3 words of one another in length.
-2. **Periodic Reset:** Every paragraph of 3 or more sentences must contain at least one sentence under 8 words.
-3. **Intentional Fragments:** When appropriate for tone, single-clause declarations or deliberate fragments are permitted to break flow.
-4. **Punctuation Diversity:**
-   - Use em-dashes (—) to insert organic conversational pivots.
-   - Use semicolons sparingly—only when connecting two tightly coupled thoughts.
-   - Inject occasional rhetorical questions or direct appeals to engage the reader.
+> Cadence is **secondary**. A hand-written paper that passed detection and the flagged AI draft had nearly identical sentence-length variance (stdev 8.6 vs 7.8). Do not force a rhythm formula; forced patterns (a short punch sentence in every paragraph, rigid length quotas) are themselves recognizable. Prioritize `human-voice-patterns/SKILL.md`.
+
+1. **Avoid runs of identical length:** do not let five or more consecutive sentences sit within 2 words of one another.
+2. **Short sentences are optional.** Use them where the thought is short, not by quota.
+3. **Intentional fragments:** allowed when natural.
+4. **Punctuation diversity:**
+   - Use em-dashes (—) sparingly; one or two per page at most.
+   - Semicolons sparingly.
+   - Colons at most ~1 per 100 words in running prose.
+   - A rhetorical question occasionally, only if it fits the voice.
 
 ---
 

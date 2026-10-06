@@ -13,14 +13,28 @@ if _env_path.exists():
     load_dotenv(dotenv_path=_env_path, override=False)
 
 
-def get_configured_model() -> LiteLlm:
-    """Instantiate and return the configured LiteLlm model adapter.
-
-    Resolves between NVIDIA NIM (SLMs & LLMs), OpenRouter, and custom
-    models configured via the HUMANIZER_MODEL environment variable.
+def get_analytic_model() -> LiteLlm:
+    """Instantiate and return the configured LiteLlm model adapter for analytical tasks (Critic/Diagnostic).
+    
+    Defaults to google/gemma-4-31b-it.
     """
-    model_name = os.getenv("HUMANIZER_MODEL", "nvidia_nim/google/gemma-4-31b-it").strip()
+    model_name = os.getenv("HUMANIZER_ANALYTIC_MODEL", "nvidia_nim/google/gemma-4-31b-it").strip()
+    return _build_model(model_name)
 
+def get_generative_model() -> LiteLlm:
+    """Instantiate and return the configured LiteLlm model adapter for creative drafting tasks (Planner/Rewriter).
+    
+    Defaults to nvidia/nemotron-3-super-120b-a12b.
+    """
+    model_name = os.getenv("HUMANIZER_GENERATIVE_MODEL", "nvidia_nim/nvidia/nemotron-3-super-120b-a12b").strip()
+    return _build_model(model_name)
+
+def get_configured_model() -> LiteLlm:
+    """Fallback for backwards compatibility, returns analytic model."""
+    return get_analytic_model()
+
+def _build_model(model_name: str) -> LiteLlm:
+    """Helper to build the LiteLlm instance with necessary API keys."""
     # Pass API keys to environment if present in system or .env
     openrouter_key = os.getenv("OPENROUTER_API_KEY", "").strip()
     if openrouter_key:
@@ -31,9 +45,21 @@ def get_configured_model() -> LiteLlm:
         os.environ["NVIDIA_API_KEY"] = nvidia_key
         os.environ["NVIDIA_NIM_API_KEY"] = nvidia_key
 
+    # Route Ollama models through local Ollama server (OpenAI-compatible /v1 endpoint)
+    if model_name.startswith("ollama/") or model_name.startswith("ollama:"):
+        clean_model = model_name.replace("ollama/", "").replace("ollama:", "")
+        ollama_base = os.getenv("OLLAMA_API_BASE", "http://127.0.0.1:11434").rstrip("/")
+        return LiteLlm(
+            model=f"openai/{clean_model}",
+            api_base=f"{ollama_base}/v1",
+            api_key="ollama",
+        )
+
     # Route NVIDIA NIM models through OpenAI-compatible endpoint with verified tool support
     if model_name.startswith("nvidia_nim/") or model_name.startswith("nvidia/"):
         clean_model = model_name.replace("nvidia_nim/", "")
+        if clean_model.startswith("nvidia/"):
+            clean_model = clean_model # Already has nvidia/ prefix
         return LiteLlm(
             model=f"openai/{clean_model}",
             api_base="https://integrate.api.nvidia.com/v1",
